@@ -1,0 +1,82 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.0.2'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'com.google.cloud.tools.jib'
+}
+
+group = 'by.mitrakhovich'
+version = 'v1'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+ext {
+    set('springCloudVersion', "2022.0.1")
+    image_version = !!System.getProperty("image_version") ? System.getProperty("image_version") : "latest"
+}
+
+jib{
+    to{
+        image = "${project.name}-image"
+        tags = ["${image_version}"]
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    implementation 'org.springframework.cloud:spring-cloud-stream'
+    implementation 'org.springframework.cloud:spring-cloud-stream-binder-rabbit'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.amqp:spring-rabbit-test'
+    testImplementation 'org.springframework.cloud:spring-cloud-stream-test-binder'
+    // https://mvnrepository.com/artifact/org.postgresql/postgresql
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
+    // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk
+    implementation group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.12.392'
+    // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3
+    implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.12.392'
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+    // https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
+    implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.4.0-b180830.0359'
+    // https://mvnrepository.com/artifact/org.mapstruct/mapstruct
+    implementation group: 'org.mapstruct', name: 'mapstruct', version: '1.5.3.Final'
+    // https://mvnrepository.com/artifact/org.mapstruct/mapstruct-processor
+    implementation 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok', 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

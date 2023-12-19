@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: song-service
+  labels:
+    app: song-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: song-service
+  template:
+    metadata:
+      name: song-service
+      labels:
+        app: song-service
+    spec:
+      containers:
+        - name: song-service
+          image: song-service-image:latest
+          livenessProbe:
+            httpGet:
+              port: 8081
+              path: /actuator/health/liveness
+            initialDelaySeconds: 10
+            periodSeconds: 3
+          readinessProbe:
+              httpGet:
+                port: 8081
+                path: /actuator/health/readiness
+              initialDelaySeconds: 20
+              periodSeconds: 3
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SONG_SERVICE_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret-config-map
+                  key: POSTGRES_USER
+            - name: SONG_SERVICE_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret-config-map
+                  key: POSTGRES_PASSWORD
+          envFrom:
+            - configMapRef:
+                name: config-map-env-song-service
+          imagePullPolicy: Never
+      restartPolicy: Always
+      

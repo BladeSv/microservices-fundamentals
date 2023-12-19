@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resource-service
+#  namespace: {{ .Release.Name }}
+  labels:
+    app: resource-service
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: resource-service
+  template:
+    metadata:
+      name: resource-service
+#      namespace: {{ .Release.Name }}
+      labels:
+        app: resource-service
+    spec:
+      containers:
+        - name: resource-service-container
+          image: "resource-service-image"
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /actuator/health/liveness
+            initialDelaySeconds: 30
+            periodSeconds: 3
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /actuator/health/readiness
+            initialDelaySeconds: 30
+            periodSeconds: 3
+            failureThreshold: 5
+          env:
+            - name: SONG_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config-map
+                  key: SONG_SERVICE_URL
+            - name: RESOURCE_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config-map
+                  key: RESOURCE_SERVICE_PORT
+            - name: RESOURCE_POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config-map
+                  key: RESOURCE_POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret-config-map
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret-config-map
+                  key: POSTGRES_PASSWORD
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Never
+      restartPolicy: Always
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+
+      
