@@ -1,10 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: song-database
+
+spec:
+  selector:
+    app: song-database
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP
+---
+
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: song-database
-{{/*  namespace: {{ .Release.Name }}*/}}
+
 spec:
-  serviceName: "resource-database"
+  serviceName: "song-database"
   selector:
     matchLabels:
       app: song-database

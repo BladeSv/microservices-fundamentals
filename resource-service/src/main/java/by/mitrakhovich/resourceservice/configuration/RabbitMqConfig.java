@@ -1,5 +1,6 @@
 package by.mitrakhovich.resourceservice.configuration;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-
+@Slf4j
 public class RabbitMqConfig {
 
     @Value("${user.messaging.queue}")
@@ -22,6 +23,7 @@ public class RabbitMqConfig {
 
     @Bean
     DirectExchange directExchange() {
+        log.info("topicExchangeName-"+topicExchangeName);
 
         DirectExchange directExchange = new DirectExchange(topicExchangeName);
         amqpAdmin.declareExchange(directExchange);
@@ -30,6 +32,7 @@ public class RabbitMqConfig {
 
     @Bean
     public Queue queue() {
+        log.info("queueName-"+queueName);
         Queue queue = new Queue(queueName, true);
         amqpAdmin.declareQueue(queue);
         return queue;
@@ -37,6 +40,7 @@ public class RabbitMqConfig {
 
     @Bean
     Binding binding(Queue queue, DirectExchange directExchange) {
+        log.info("routingName-"+routingName);
         Binding binding = BindingBuilder.bind(queue).to(directExchange).with(routingName);
         amqpAdmin.declareBinding(binding);
         return binding;

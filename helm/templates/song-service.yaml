@@ -1,3 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: song-service
+spec:
+  selector:
+    app: song-service
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+  type: ClusterIP
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -30,6 +43,10 @@ spec:
                 path: /actuator/health/readiness
               initialDelaySeconds: 20
               periodSeconds: 3
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "sh", "-c", "sleep 10" ]
           ports:
             - containerPort: 8081
           env:

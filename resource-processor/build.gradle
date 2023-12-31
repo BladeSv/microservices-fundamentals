@@ -1,3 +1,9 @@
+buildscript {
+    dependencies {
+        classpath('com.google.cloud.tools:jib-spring-boot-extension-gradle:0.1.0')
+    }
+}
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.0.2'
@@ -21,10 +27,18 @@ ext {
     image_version = !!System.getProperty("image_version") ? System.getProperty("image_version") : "latest"
 }
 
-jib{
+
+
+
+jib{d
     to{
         image = "${project.name}-image"
         tags = ["${image_version}"]
+    }
+    pluginExtensions {
+        pluginExtension {
+            implementation = 'com.google.cloud.tools.jib.gradle.extension.springboot.JibSpringBootExtension'
+        }
     }
 }
 
