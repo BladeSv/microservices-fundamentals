@@ -1,22 +1,19 @@
-buildscript {
-    dependencies {
-        classpath('com.google.cloud.tools:jib-spring-boot-extension-gradle:0.1.0')
-    }
-}
-
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.0.2'
     id 'io.spring.dependency-management' version '1.1.0'
-    id 'com.google.cloud.tools.jib'
 }
 
 group = 'by.mitrakhovich'
-version = 'v1'
+version = !!System.getProperty("image_version") ? System.getProperty("image_version") : "latest"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
+}
+
+tasks.named("bootBuildImage") {
+    imageName = "${project.name}-image:${version}"
 }
 
 compileJava.options.encoding = "UTF-8"
@@ -24,24 +21,7 @@ compileTestJava.options.encoding = "UTF-8"
 
 ext {
     set('springCloudVersion', "2022.0.1")
-    image_version = !!System.getProperty("image_version") ? System.getProperty("image_version") : "latest"
 }
-
-
-
-
-jib{d
-    to{
-        image = "${project.name}-image"
-        tags = ["${image_version}"]
-    }
-    pluginExtensions {
-        pluginExtension {
-            implementation = 'com.google.cloud.tools.jib.gradle.extension.springboot.JibSpringBootExtension'
-        }
-    }
-}
-
 
 configurations {
     compileOnly {
@@ -57,11 +37,10 @@ repositories {
     }
 }
 
-
-
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation 'org.springframework.cloud:spring-cloud-stream'
     implementation 'org.springframework.cloud:spring-cloud-stream-binder-rabbit'
@@ -76,12 +55,12 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok', 'org.springframework.boot:spring-boot-configuration-processor'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
+
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }
-
 
 tasks.named('test') {
     useJUnitPlatform()

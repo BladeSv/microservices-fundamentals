@@ -2,7 +2,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: song-database
-
 spec:
   selector:
     app: song-database
@@ -25,13 +24,12 @@ spec:
       app: song-database
   template:
     metadata:
-{{/*      namespace: {{ .Release.Name }}*/}}
       labels:
         app: song-database
     spec:
       containers:
         - name: song-database
-          image: postgres:14.9
+          image: postgres:14.10
           livenessProbe:
             exec:
               command:

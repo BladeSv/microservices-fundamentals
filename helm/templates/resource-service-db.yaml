@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
         - name: resource-database
-          image: postgres:14.9
+          image: postgres:14.10
           livenessProbe:
             exec:
               command:
