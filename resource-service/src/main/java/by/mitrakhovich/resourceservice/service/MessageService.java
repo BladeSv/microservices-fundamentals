@@ -14,7 +14,7 @@ public class MessageService {
     private NewTopic topic;
 
     public void sentMessage(String message) {
-        log.info("send to rabbitmq message-{}", message);
+        log.info("send to kafka topic {} message-{}", topic.name(), message);
         kafkaTemplate.send(topic.name(), message);
     }
 }
