@@ -19,7 +19,7 @@ public class ExceptionControllerAdvice {
     }
 
     @ExceptionHandler
-    public ResponseEntity handleRuntimeException(RuntimeException ex) {
+    public ResponseEntity<?> handleRuntimeException(RuntimeException ex) {
         log.error("Runtime Exception", ex);
         return new ResponseEntity<>("An internal server error has occurred", HttpStatus.INTERNAL_SERVER_ERROR);
     }

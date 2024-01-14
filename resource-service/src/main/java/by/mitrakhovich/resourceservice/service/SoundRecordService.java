@@ -44,6 +44,7 @@ public class SoundRecordService {
             s3Resource.setFileName(soundRecord.get().getFileName());
             return s3Resource;
         }
+
         return null;
     }
 

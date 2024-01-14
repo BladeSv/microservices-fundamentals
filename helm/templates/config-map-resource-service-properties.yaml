@@ -14,9 +14,9 @@ data:
     spring.rabbitmq.template.retry.max-attempts=3
     spring.rabbitmq.template.retry.enabled=true
     server.port=8080
-    spring.datasource.password=pass
     spring.datasource.url=jdbc:postgresql://resource-database:5432/mp3resource
-    spring.datasource.username=root
+    spring.datasource.username=${POSTGRES_USER}
+    spring.datasource.password=${POSTGRES_PASSWORD}
     spring.jpa.hibernate.ddl-auto=none
     spring.jpa.show-sql=true
     #spring.jpa.properties.hibernate=null
@@ -28,5 +28,9 @@ data:
     user.aws.s3.bucket.name=bladesv
     user.aws.s3Endpoint=http://localstack:4566/
     user.messaging.queue=id-resource-queue
-
+    spring.kafka.client-id=resource-id
+    spring.kafka.bootstrap-servers=http://kafka:9092
+    spring.kafka.producer.client-id=resource-id
+    spring.kafka.producer.bootstrap-servers=http://kafka:9092
+    application.kafka.topic=resource-topic
   
