@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+spec:
+  selector:
+    app: kafka
+  ports:
+    - name: plaintext
+      protocol: TCP
+      port: 9092
+      targetPort: 9092
+    - name: plaintext2
+      protocol: TCP
+      port: 9093
+      targetPort: 9093
+  type: {{ .Values.service.type }}
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka
+spec:
+  serviceName: kafka
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+        - name: kafka-contanier
+          image: wurstmeister/kafka
+          env:
+            - name: KAFKA_ADVERTISED_LISTENERS
+              value: "INSIDE://kafka:9092,OUTSIDE://localhost:9093"
+            - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+              value: "INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT"
+            - name: KAFKA_LISTENERS
+              value: "INSIDE://kafka-0.kafka:9092,OUTSIDE://0.0.0.0:9093"
+            - name: KAFKA_INTER_BROKER_LISTENER_NAME
+              value: "INSIDE"
+            - name: KAFKA_ZOOKEEPER_CONNECT
+              value: "zookeeper:2181"
+{{/*            - name: KAFKA_CREATE_TOPICS*/}}
+{{/*              value: "baeldung:1:1"*/}}
+            - name: KAFKA_PORT
+              value: "9092"
+          volumeMounts:
+            - name: kafka-data
+              mountPath: /var/lib/kafka/data
+          ports:
+            - containerPort: 9092
+            - containerPort: 9093
+      volumes:
+        - name: kafka-data
+          emptyDir: { }
+

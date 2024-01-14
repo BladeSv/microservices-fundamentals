@@ -1,3 +1,4 @@
+{{ if not .Values.profile.local }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -50,19 +51,24 @@ spec:
           ports:
             - containerPort: 8081
           env:
-            - name: SONG_SERVICE_DB_USER
+            - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
                   name: app-secret-config-map
                   key: POSTGRES_USER
-            - name: SONG_SERVICE_DB_PASS
+            - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: app-secret-config-map
                   key: POSTGRES_PASSWORD
-          envFrom:
-            - configMapRef:
-                name: config-map-env-song-service
+          volumeMounts:
+            - mountPath: /workspace/BOOT-INF/classes/application.properties
+              name: song-app-properties
+              subPath: application.properties
           imagePullPolicy: Never
       restartPolicy: Always
-      
+      volumes:
+        - name: song-app-properties
+          configMap:
+            name: config-map-song-service-properties
+{{ end }}

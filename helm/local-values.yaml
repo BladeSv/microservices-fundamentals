@@ -1,12 +1,13 @@
 profile:
-  local: false
+  local: true
 service:
-  type: ClusterIP
-
+  type: LoadBalancer
 songDb:
   ports:
-    port: 5432
+    port: 6432
     targetPort: 5432
-
+kafka:
+  test: false
 replicaCount: 1
+
 

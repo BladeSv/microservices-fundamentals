@@ -7,9 +7,9 @@ spec:
     app: song-database
   ports:
     - protocol: TCP
-      port: 5432
-      targetPort: 5432
-  type: ClusterIP
+      port: {{ .Values.songDb.ports.port }}
+      targetPort: {{ .Values.songDb.ports.targetPort }}
+  type: {{ .Values.service.type }}
 ---
 
 apiVersion: apps/v1

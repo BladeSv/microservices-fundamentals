@@ -2,29 +2,16 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: app-config-map
-
 data:
-  SONG_SERVICE_URL: "http://song-service-service.default.svc.cluster.local:8081/songs"
-
-  RESOURCE_SERVICE_PORT: "8080"
-  RESOURCE_POSTGRES_DB: "jdbc:postgresql://resource-database-service:5432/mp3resource"
-
-  SONG_SERVICE_PORT: "8081"
-  SONG_POSTGRES_DB: "jdbc:postgresql://song-database-service:5432/songs"
-
   RESOURCE_POSTGRES_DB_NAME: "mp3resource"
   SONG_POSTGRES_DB_NAME: "songs"
-
   init-resource-db-schema: 'CREATE TABLE public.sound_record ( id SERIAL NOT NULL, file_name varchar(255) NULL, CONSTRAINT sound_record_pkey PRIMARY KEY (id));'
   init-song-db-schema: 'CREATE TABLE public.song_dao (id SERIAL NOT NULL, album varchar(255) NULL, artist varchar(255) NULL, length varchar(255) NULL, "name" varchar(255) NULL, resource_id varchar(255) NULL, "year" varchar(255) NULL, CONSTRAINT song_dao_pkey PRIMARY KEY (id));'
-
-
 ---
 apiVersion: v1
 kind: Secret
 metadata:
   name: app-secret-config-map
-
 data:
   POSTGRES_USER: "cm9vdA=="
   POSTGRES_PASSWORD: "cGFzcw=="

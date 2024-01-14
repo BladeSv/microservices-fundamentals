@@ -21,10 +21,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/resources")
 public class ResourceController {
-    SoundRecordService soundRecordService;
+    private SoundRecordService soundRecordService;
 
     @PostMapping
-
     public ResponseEntity<?> uploadResource(@ValidFile @RequestParam("file") MultipartFile file) {
         Map<String, Long> responseBody = soundRecordService.saveRecord(file);
 
@@ -71,4 +70,6 @@ public class ResourceController {
                 .header(HttpHeaders.CACHE_CONTROL, "no-cache")
                 .body(resource);
     }
+
+
 }

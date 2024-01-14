@@ -9,7 +9,7 @@ spec:
     - protocol: TCP
       port: 4566
       targetPort: 4566
-  type: ClusterIP
+  type: {{ .Values.service.type }}
 ---
 
 apiVersion: apps/v1
