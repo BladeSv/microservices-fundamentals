@@ -37,8 +37,6 @@ public class S3Repository {
     }
 
     public void uploadFile(final MultipartFile file, String s3FileName) {
-
-        System.out.println("s3FileName-" + s3FileName);
         InputStream inputStream;
         try {
             inputStream = file.getInputStream();
@@ -59,6 +57,7 @@ public class S3Repository {
         try {
             Upload upload = transferManager.upload(request);
             upload.waitForCompletion();
+            log.info("file with name-{} was uploaded to bucket-{}", s3FileName, bucketName);
         } catch (InterruptedException e) {
             log.error("Can not upload file to s3 bucket", e);
             throw new RuntimeException(e);
