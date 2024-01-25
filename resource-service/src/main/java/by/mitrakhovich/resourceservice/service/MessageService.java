@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Data
 public class MessageService {
+
     @Autowired
+
     private KafkaTemplate<String, String> kafkaTemplate;
     @Autowired
     private NewTopic topic;

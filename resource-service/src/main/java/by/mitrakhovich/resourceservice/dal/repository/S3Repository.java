@@ -56,6 +56,7 @@ public class S3Repository {
         try {
             Upload upload = transferManager.upload(request);
             upload.waitForCompletion();
+            log.info("file with name-{} was uploaded to bucket-{}", s3FileName, bucketName);
         } catch (InterruptedException e) {
             log.error("Can not upload file to s3 bucket", e);
             throw new RuntimeException(e);

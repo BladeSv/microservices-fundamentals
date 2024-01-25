@@ -27,7 +27,6 @@ public class ResourceController {
     public ResponseEntity<?> uploadResource(@ValidFile @RequestParam("file") MultipartFile file) {
         Map<String, Long> responseBody = soundRecordService.saveRecord(file);
 
-
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
