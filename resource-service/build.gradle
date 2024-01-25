@@ -55,24 +55,17 @@ dependencies {
     testImplementation 'org.springframework.kafka:spring-kafka-test'
 
     implementation 'org.springframework.cloud:spring-cloud-stream'
+
     // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-contract-verifier
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-contract-verifier', version: '4.1.0'
-
-
-    // https://mvnrepository.com/artifact/com.adobe.testing/s3mock
-//    implementation group: 'com.adobe.testing', name: 's3mock', version: '3.3.0'
-// https://mvnrepository.com/artifact/com.adobe.testing/s3mock-junit5
-//    testImplementation group: 'com.adobe.testing', name: 's3mock-junit5', version: '3.3.0'
 // https://mvnrepository.com/artifact/com.h2database/h2
     testImplementation group: 'com.h2database', name: 'h2', version: '2.2.224'
-
     // https://mvnrepository.com/artifact/io.cucumber/cucumber-java
     implementation group: 'io.cucumber', name: 'cucumber-java', version: '7.15.0'
 // https://mvnrepository.com/artifact/io.cucumber/cucumber-junit
     testImplementation group: 'io.cucumber', name: 'cucumber-junit', version: '7.15.0'
 // https://mvnrepository.com/artifact/io.cucumber/cucumber-spring
     implementation group: 'io.cucumber', name: 'cucumber-spring', version: '7.15.0'
-
 
     // https://mvnrepository.com/artifact/org.postgresql/postgresql
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
