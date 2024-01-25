@@ -1,8 +1,11 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.0.2'
-    id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.springframework.boot' version '3.2.1'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id "org.springframework.cloud.contract" version "4.1.0"
+
 }
+
 
 group = 'by.mitrakhovich'
 version = !!System.getProperty("image_version") ? System.getProperty("image_version") : "latest"
@@ -33,6 +36,15 @@ repositories {
     mavenCentral()
 }
 
+
+contracts {
+
+    baseClassForTests = "by.mitrakhovich.resourceservice.controller.ResourceControllerContractTest"
+    contractsDslDir = project.file("${project.projectDir}/src/test/resources/contracts")
+
+}
+
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -41,7 +53,19 @@ dependencies {
 
     implementation 'org.springframework.kafka:spring-kafka'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
+
     implementation 'org.springframework.cloud:spring-cloud-stream'
+
+    // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-contract-verifier
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-contract-verifier', version: '4.1.0'
+// https://mvnrepository.com/artifact/com.h2database/h2
+    testImplementation group: 'com.h2database', name: 'h2', version: '2.2.224'
+    // https://mvnrepository.com/artifact/io.cucumber/cucumber-java
+    implementation group: 'io.cucumber', name: 'cucumber-java', version: '7.15.0'
+// https://mvnrepository.com/artifact/io.cucumber/cucumber-junit
+    testImplementation group: 'io.cucumber', name: 'cucumber-junit', version: '7.15.0'
+// https://mvnrepository.com/artifact/io.cucumber/cucumber-spring
+    implementation group: 'io.cucumber', name: 'cucumber-spring', version: '7.15.0'
 
     // https://mvnrepository.com/artifact/org.postgresql/postgresql
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'

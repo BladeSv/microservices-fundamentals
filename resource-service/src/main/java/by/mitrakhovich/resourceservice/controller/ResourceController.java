@@ -69,6 +69,4 @@ public class ResourceController {
                 .header(HttpHeaders.CACHE_CONTROL, "no-cache")
                 .body(resource);
     }
-
-
 }
