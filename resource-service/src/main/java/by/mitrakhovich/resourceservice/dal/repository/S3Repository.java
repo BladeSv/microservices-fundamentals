@@ -32,13 +32,11 @@ public class S3Repository {
     public void init() {
         boolean existS3 = s3.doesBucketExistV2(bucketName);
         if (!existS3) {
-            Bucket bucket = s3.createBucket(bucketName);
+            s3.createBucket(bucketName);
         }
     }
 
     public void uploadFile(final MultipartFile file, String s3FileName) {
-
-        System.out.println("s3FileName-" + s3FileName);
         InputStream inputStream;
         try {
             inputStream = file.getInputStream();
@@ -46,7 +44,6 @@ public class S3Repository {
             log.error("Can not get input stream from input MultipartFile", e);
             throw new RuntimeException(e);
         }
-
         String contentType = file.getContentType();
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(contentType);
@@ -66,8 +63,6 @@ public class S3Repository {
     }
 
     public S3Object download(Long id, long startRange, long endRange) {
-
-
         GetObjectRequest request = new GetObjectRequest(bucketName, id.toString());
         if (startRange >= 0 && endRange >= 0) {
             request.setRange(startRange, endRange);

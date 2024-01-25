@@ -10,10 +10,7 @@ import org.springframework.http.HttpRange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -22,10 +19,11 @@ import java.util.stream.Collectors;
 public class SoundRecordService {
     private SoundRecordRepository soundRecordRepository;
     private S3service s3service;
-
     private MessageService messageService;
 
     public Map<String, Long> saveRecord(final MultipartFile file) {
+        if (file == null) return Collections.emptyMap();
+
         SoundRecord soundRecord = new SoundRecord();
         soundRecord.setFileName(file.getOriginalFilename());
         SoundRecord savedSoundRecord = soundRecordRepository.save(soundRecord);
@@ -37,6 +35,7 @@ public class SoundRecordService {
     }
 
     public RecordDTO getRecord(long id, HttpRange httpRange) {
+        if (id <= 0) return null;
         Optional<SoundRecord> soundRecord = soundRecordRepository.findById(id);
 
         if (soundRecord.isPresent()) {
