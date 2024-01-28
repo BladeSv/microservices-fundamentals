@@ -1,12 +1,12 @@
 package by.mitrakhovich.resourceprocessor.processor.Model;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 @Data
 @Builder
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class Song {
     private String name;
     private String artist;

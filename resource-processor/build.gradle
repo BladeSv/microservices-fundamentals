@@ -33,9 +33,6 @@ configurations {
 
 repositories {
     mavenCentral()
-    maven {
-        url "https://repository.groupdocs.com/repo/"
-    }
 }
 
 dependencies {
@@ -49,7 +46,10 @@ dependencies {
     testImplementation 'org.springframework.kafka:spring-kafka-test'
     testImplementation 'org.springframework.cloud:spring-cloud-stream-test-binder'
 
-    implementation 'com.groupdocs:groupdocs-metadata:22.2'
+    // https://mvnrepository.com/artifact/org.apache.tika/tika-core
+    implementation 'org.apache.tika:tika-core:3.0.0-BETA'
+// https://mvnrepository.com/artifact/org.apache.tika/tika-parsers-standard-package
+    implementation 'org.apache.tika:tika-parsers-standard-package:3.0.0-BETA'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok', 'org.springframework.boot:spring-boot-configuration-processor'

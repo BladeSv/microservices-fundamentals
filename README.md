@@ -1,6 +1,81 @@
 # microservices-fundamentals-learn
 
-# Task2
+# Task 4
+
+## What to do
+
+In this module you will need to adjust your services with containerization approach.
+
+## Sub-task 1: Docker images
+
+1. Package your applications as Docker images.
+2. For each of your services:
+
+- Create a new or modify an existing _Docker_ file that will contain instructions for packaging your project.
+- Build a docker image and run it, mapping an external port to verify that application can be started and respond to
+  requests.
+
+## Sub-task 2: Docker Compose file
+
+1. When all applications are successfully packaged, create a new or modify an existing _docker-compose.yml_ file that
+   would list all applications and 3rd party dependencies to successfully start the project. Add init scripts for the
+   database to run when container starts up. Once you have a compose file, you can create and start your application
+   containers with a single command: `docker-compose up`.
+
+Please note the following:
+
+- Use an _.env_ file to replace all environment variables depending on the set-up.
+- For 3rd party dependencies try to use the _–alpine_ images whenever it's possible.
+- For project applications use the build property as these images are not going to be pulled from a public hub.
+- Use logical service names to cross-reference services.
+
+Possible container options for existing resources:
+
+- [postgres DB](https://hub.docker.com/_/postgres)
+- [mysql db](https://hub.docker.com/_/mysql)
+- [RabbitMQ message broker](https://hub.docker.com/_/rabbitmq)
+- [ActiveMQ message broker](https://hub.docker.com/r/rmohr/activemq)
+- [Local stack (aws emulator)](https://hub.docker.com/r/localstack/localstack)
+
+[![](assets/containerization.png)
+
+# Task 3
+
+## What to do
+
+In this module it is needed to adjust services with adding tests.
+
+## Sub-task 1: Testing strategy
+
+1. For solving this task, come up with a testing strategy and describe approach on how to ensure application stability
+   and testing strategies:
+
+- Unit tests
+- Integration tests
+- Component tests
+- Contract tests
+- End-to-end tests
+
+2. Describe it in a short document what approach was chosen and how the combination of the strategies would help to
+   solve task, e.g., either it's going to be 100% **unit tests** and **integration tests** or something else.
+
+## Sub-task 2: Perform different types of testing
+
+1. _Unit tests_: choose JUnit or Spock and choose module that need to be tested.
+2. _Integration tests_: choose JUnit or Spock and cover integration layers.
+3. _Component tests_: cover component scenarios on a business level, specifying exact scenario or scenarios and expected
+   outcomes in a natural language, preferably using the Cucumber framework.
+4. _Contract tests_: cover all contracts that are used in a specific scenario, preferably using
+   the [Spring Cloud Contract](https://spring.io/projects/spring-cloud-contract) or Pact (contract tests should cover
+   BOTH communication styles: synchronous HTTP and messaging, including stubs propagation).
+5. _End-to-end tests_: all scenarios should be described in a natural language. Focus is on coverage on the API layer.
+   Cucumber testing framework can be used in this case with the component tests from above.
+
+**Note**
+
+- At least one test should be executed for each test type.
+
+# Task 2
 
 ## What to do
 
