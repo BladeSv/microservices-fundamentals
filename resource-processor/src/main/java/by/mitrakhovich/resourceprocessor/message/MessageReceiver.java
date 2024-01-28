@@ -2,7 +2,7 @@ package by.mitrakhovich.resourceprocessor.message;
 
 
 import by.mitrakhovich.resourceprocessor.processor.Model.Song;
-import by.mitrakhovich.resourceprocessor.processor.SongProcessor;
+import by.mitrakhovich.resourceprocessor.processor.TikaSongProcessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
@@ -28,10 +28,10 @@ public class MessageReceiver {
     private String resourceServiceUrl;
     @Value("${user.song-service}")
     private String songServiceUrl;
-    private SongProcessor songProcessor;
+    private TikaSongProcessor songProcessor;
     private NewTopic topic;
 
-    public MessageReceiver(SongProcessor songProcessor) {
+    public MessageReceiver(TikaSongProcessor songProcessor) {
         this.songProcessor = songProcessor;
     }
 
