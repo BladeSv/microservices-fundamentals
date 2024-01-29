@@ -21,7 +21,7 @@ compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
 
 ext {
-    set('springCloudVersion', "2022.0.1")
+    set('springCloudVersion', "2023.0.0")
 }
 
 configurations {
@@ -36,6 +36,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'

@@ -2,4 +2,5 @@ rootProject.name = 'microservices-fundamentals'
 include 'resource-service'
 include 'song-service'
 include 'resource-processor'
+include 'config-server'
 
