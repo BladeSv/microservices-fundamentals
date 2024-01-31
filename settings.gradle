@@ -3,4 +3,5 @@ include 'resource-service'
 include 'song-service'
 include 'resource-processor'
 include 'config-server'
-
+include 'eureka-server'
+include 'gateway-server'

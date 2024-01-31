@@ -39,11 +39,11 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 3
           readinessProbe:
-              httpGet:
-                port: 8081
-                path: /actuator/health/readiness
-              initialDelaySeconds: 20
-              periodSeconds: 3
+            httpGet:
+              port: 8081
+              path: /actuator/health/readiness
+            initialDelaySeconds: 20
+            periodSeconds: 3
           lifecycle:
             preStop:
               exec:
@@ -62,7 +62,7 @@ spec:
                   name: app-secret-config-map
                   key: POSTGRES_PASSWORD
           volumeMounts:
-            - mountPath: /workspace/BOOT-INF/classes/application.properties
+            - mountPath: /app/resources/application.properties
               name: song-app-properties
               subPath: application.properties
           imagePullPolicy: Never

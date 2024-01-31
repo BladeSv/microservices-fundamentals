@@ -2,15 +2,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: resource-service
+  name: gateway-server
 
 spec:
   selector:
-    app: resource-service
+    app: gateway-server
   ports:
     - protocol: TCP
-      port: 8080
-      targetPort: 8080
+      port: 8090
+      targetPort: 8090
   type: ClusterIP
 
 ---
@@ -18,35 +18,35 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: resource-service
+  name: gateway-server
 
   labels:
-    app: resource-service
+    app: gateway-server
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: resource-service
+      app: gateway-server
   template:
     metadata:
-      name: resource-service
+      name: gateway-server
 
       labels:
-        app: resource-service
+        app: gateway-server
     spec:
       containers:
-        - name: resource-service-container
-          image: resource-service-image:latest
+        - name: gateway-server-container
+          image: gateway-server-image:latest
           livenessProbe:
             httpGet:
-              port: 8080
+              port: 8090
               path: /actuator/health/liveness
             initialDelaySeconds: 30
             periodSeconds: 3
             failureThreshold: 5
           readinessProbe:
             httpGet:
-              port: 8080
+              port: 8090
               path: /actuator/health/readiness
             initialDelaySeconds: 30
             periodSeconds: 3
@@ -55,29 +55,18 @@ spec:
             preStop:
               exec:
                 command: [ "sh", "-c", "sleep 10" ]
-          env:
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: app-secret-config-map
-                  key: POSTGRES_USER
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: app-secret-config-map
-                  key: POSTGRES_PASSWORD
           volumeMounts:
             - mountPath: /app/resources/application.properties
-              name: resource-app-properties
+              name: gateway-server-app-properties
               subPath: application.properties
           ports:
-            - containerPort: 8080
+            - containerPort: 8090
           imagePullPolicy: Never
       restartPolicy: Always
       volumes:
-        - name: resource-app-properties
+        - name: gateway-server-app-properties
           configMap:
-            name: config-map-resource-service-properties
+            name: config-map-gateway-server-properties
   strategy:
     type: RollingUpdate
     rollingUpdate:

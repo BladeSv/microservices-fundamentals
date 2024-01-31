@@ -27,7 +27,7 @@ public class ResourceControllerTest {
     private SoundRecordService soundRecordService;
 
     @Test
-    void greetingShouldReturnMessageFromService() throws Exception {
+    void shouldReturnMessageFromService() throws Exception {
 
         RecordDTO recordDTO = new RecordDTO(InputStream.nullInputStream(), "Metallica", "contentType", 0L);
         when(soundRecordService.getRecord(eq(1L), any())).thenReturn(recordDTO);

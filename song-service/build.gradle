@@ -1,11 +1,19 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.2.1'
+    id 'org.springframework.boot' version '3.2.2'
     id 'io.spring.dependency-management' version '1.1.4'
+    id 'com.google.cloud.tools.jib' version '3.4.0'
 }
 
 group = 'by.mitrakhovich'
 version = !!System.getProperty("image_version") ? System.getProperty("image_version") : "latest"
+
+jib {
+    to {
+        image "${project.name}-image"
+        tags = ["${version}"]
+    }
+}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -13,10 +21,6 @@ java {
 }
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
-
-tasks.named("bootBuildImage") {
-    imageName = "${project.name}-image:${version}"
-}
 
 configurations {
     compileOnly {
@@ -34,6 +38,7 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
