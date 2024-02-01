@@ -11,15 +11,12 @@ spec:
     - protocol: TCP
       port: 8090
       targetPort: 8090
-  type: ClusterIP
-
+  type: LoadBalancer
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gateway-server
-
   labels:
     app: gateway-server
 spec:
