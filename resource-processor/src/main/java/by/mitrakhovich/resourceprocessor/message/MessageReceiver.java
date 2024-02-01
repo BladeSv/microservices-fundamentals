@@ -30,9 +30,12 @@ public class MessageReceiver {
     private String songServiceUrl;
     private TikaSongProcessor songProcessor;
     private NewTopic topic;
+    private RestTemplate restTemplate;
 
-    public MessageReceiver(TikaSongProcessor songProcessor) {
+    public MessageReceiver(TikaSongProcessor songProcessor, NewTopic topic, RestTemplate restTemplate) {
         this.songProcessor = songProcessor;
+        this.topic = topic;
+        this.restTemplate = restTemplate;
     }
 
     @KafkaListener(topics = "#{topic.name()}", groupId = "resource-consumer")
@@ -46,9 +49,8 @@ public class MessageReceiver {
     }
 
     private byte[] getResourceObject(String resourceId) {
-        log.info("send request to resource service record with id-{}", resourceId);
-        RestTemplate restTemplate = new RestTemplate();
         String url = resourceServiceUrl + resourceId;
+        log.info("send request to get resource service record with url {} and id {}", url, resourceId);
         byte[] forObject = restTemplate.getForObject(url, byte[].class);
         log.info("get from resource service record with data length-{}", forObject != null ? forObject.length : "zero");
         return forObject;
@@ -56,7 +58,6 @@ public class MessageReceiver {
 
     @Retryable
     private void sentSongMetaData(Song song) throws JsonProcessingException {
-        RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         String songJSON = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(song);

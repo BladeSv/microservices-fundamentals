@@ -4,17 +4,5 @@ metadata:
   name: config-map-resource-processor-properties
 data:
   application.properties: |
-    management.endpoint.health.probes.enabled=true
-    server.port=8082
-    user.resource-service=http://resource-service:8080/resources/
-    user.song-service=http://song-service:8081/songs
-    spring.kafka.bootstrap-servers=http://kafka:9092
-    spring.kafka.client-id=resource-consumer
-    spring.kafka.consumer.bootstrap-servers=http://kafka:9092
-    spring.kafka.consumer.client-id=resource-consumer
-    application.kafka.topic=resource-topic
-
-
-
-
-  
+    spring.application.name=resource-processor
+    spring.config.import=optional:configserver:http://config-server:8099
