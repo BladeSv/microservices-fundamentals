@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +59,7 @@ public class ResourceController {
         ByteArrayResource resource = new ByteArrayResource(FileUtil.readAsByteArray(s3Resource.getResource()));
 
         ContentDisposition contentDisposition = ContentDisposition.builder("attachment")
-                .filename(s3Resource.getFileName(), StandardCharsets.UTF_8)
+                .filename(s3Resource.getFileName())
                 .build();
 
         return responseEntityBuilder.contentType(MediaType.APPLICATION_OCTET_STREAM)

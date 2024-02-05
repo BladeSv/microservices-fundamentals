@@ -1,0 +1,91 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: storage-database
+spec:
+  selector:
+    app: storage-database
+  ports:
+    - protocol: TCP
+      port: {{ .Values.storageDb.ports.port }}
+      targetPort: {{ .Values.songDb.ports.targetPort }}
+  type: {{ .Values.service.type }}
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: storage-database
+
+spec:
+  serviceName: "storage-database"
+  selector:
+    matchLabels:
+      app: storage-database
+  template:
+    metadata:
+      labels:
+        app: storage-database
+    spec:
+      containers:
+        - name: storage-database
+          image: postgres:14.10
+          livenessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - -c
+                - pg_isready -U $POSTGRES_USER -d $POSTGRES_DB
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 5
+          readinessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - -c
+                - PGPASSWORD=$POSTGRES_PASSWORD psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'SELECT 1 FROM storage_dao LIMIT 1;'
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 5
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret-config-map
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret-config-map
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config-map
+                  key: STORAGE_POSTGRES_DB_NAME
+          volumeMounts:
+            - name: storage-database-db-pvc
+              mountPath: /var/lib/postgresql/data
+            - name: storage-database-init-vol
+              mountPath: /docker-entrypoint-initdb.d/init.sql
+              subPath: init-storage-db-schema
+            - name: storage-database-init-vol
+              mountPath: /docker-entrypoint-initdb.d/script.sql
+              subPath: script-storage-db-schema
+      volumes:
+        - name: storage-database-init-vol
+          configMap:
+            name: app-config-map
+  volumeClaimTemplates:
+    - metadata:
+        name: storage-database-db-pvc
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi

@@ -1,4 +1,4 @@
-package by.mitrakhovich.resourceservice.service;
+package by.mitrakhovich.resourceprocessor.message;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,11 +20,11 @@ public class MessageService {
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
     @Autowired
-    @Qualifier("resource_service_topic")
+    @Qualifier("resource_processor_topic")
     private NewTopic topic;
 
     public void sentMessage(String message) {
-        log.info("send to kafka resource-service topic message-{}", message);
+        log.info("send to kafka resource-processor topic message-{}", message);
         kafkaTemplate.send(topic.name(), message);
     }
 }

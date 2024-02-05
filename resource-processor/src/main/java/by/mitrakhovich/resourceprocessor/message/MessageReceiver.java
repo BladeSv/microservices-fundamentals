@@ -7,7 +7,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -23,29 +22,29 @@ import java.io.ByteArrayInputStream;
 @Slf4j
 @Data
 public class MessageReceiver {
-
     @Value("${user.resource-service}")
     private String resourceServiceUrl;
     @Value("${user.song-service}")
     private String songServiceUrl;
     private TikaSongProcessor songProcessor;
-    private NewTopic topic;
     private RestTemplate restTemplate;
+    private MessageService messageService;
 
-    public MessageReceiver(TikaSongProcessor songProcessor, NewTopic topic, RestTemplate restTemplate) {
+    public MessageReceiver(TikaSongProcessor songProcessor, RestTemplate restTemplate, MessageService messageService) {
         this.songProcessor = songProcessor;
-        this.topic = topic;
         this.restTemplate = restTemplate;
+        this.messageService = messageService;
     }
 
-    @KafkaListener(topics = "#{topic.name()}", groupId = "resource-consumer")
+    @KafkaListener(topics = "#{resource_service_topic.name()}", groupId = "resource-consumer")
     public void receiveMessageKafka(String message) throws JsonProcessingException {
-        log.info("receive from kafka message-{}", message);
+        log.info("receive from kafka resource-service topic message-{}", message);
         byte[] resourceObject = getResourceObject(message);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(resourceObject);
 
         Song song = songProcessor.processSound(byteArrayInputStream, message);
         sentSongMetaData(song);
+        messageService.sentMessage(message);
     }
 
     private byte[] getResourceObject(String resourceId) {
