@@ -1,15 +1,25 @@
 package by.mitrakhovich.resourceservice.configuration;
 
+import by.mitrakhovich.resourceservice.model.Storage;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.Collections;
+import java.util.List;
+
+@Slf4j
 @Configuration
 public class Config {
     @Value("${user.aws.s3Endpoint}")
@@ -20,6 +30,23 @@ public class Config {
     private String awsSecretAccessKey;
     @Value("${user.aws.awsRegion}")
     private String awsRegion;
+
+    @Value("${application.defaultStorages}")
+    private String defaultStorages;
+
+    @Bean("defaultStorages")
+    public List<Storage> getDefaultStorages() {
+        JsonMapper mapper = new JsonMapper();
+        List<Storage> storages;
+        try {
+            storages = List.of(mapper.readValue(defaultStorages, Storage[].class));
+        } catch (JsonProcessingException e) {
+            log.info("Default Storages configuration is empty");
+            storages = Collections.emptyList();
+        }
+
+        return storages;
+    }
 
     @Bean
     public AWSCredentials getAWSCredentials() {
@@ -35,5 +62,11 @@ public class Config {
                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(s3Endpoint, awsRegion))
                 .withPathStyleAccessEnabled(true)
                 .build();
+    }
+
+    @Bean
+    @LoadBalanced
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
     }
 }

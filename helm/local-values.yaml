@@ -6,6 +6,10 @@ songDb:
   ports:
     port: 6432
     targetPort: 5432
+storageDb:
+  ports:
+    port: 7432
+    targetPort: 5432
 kafka:
   test: false
 replicaCount: 1

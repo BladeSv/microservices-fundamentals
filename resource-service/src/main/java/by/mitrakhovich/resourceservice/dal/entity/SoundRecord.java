@@ -18,4 +18,7 @@ public class SoundRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String fileName;
+    private StorageType storageType;
+    private String bucket;
+    private String path;
 }
