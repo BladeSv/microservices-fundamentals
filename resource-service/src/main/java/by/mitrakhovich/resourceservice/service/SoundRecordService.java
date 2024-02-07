@@ -27,7 +27,8 @@ public class SoundRecordService {
 
     public Map<String, Long> saveRecord(final MultipartFile file) {
         if (file == null) return Collections.emptyMap();
-        Storage stagingStorage = storageService.getStagingStorage();
+        List<Storage> storages = storageService.getStorages();
+        Storage stagingStorage = storageService.getStagingStorage(storages);
         SoundRecord soundRecord = createSoundRecord(file);
         setToSoundRecordStorageData(soundRecord, stagingStorage);
         SoundRecord savedSoundRecord = soundRecordRepository.save(soundRecord);
@@ -41,7 +42,8 @@ public class SoundRecordService {
     public void moveToPermanentBucket(String id) {
         SoundRecord soundRecord = soundRecordRepository.findById(Long.valueOf(id))
                 .orElseThrow(() -> new RuntimeException("Not exist Sound Record with id " + id));
-        Storage permanentStorage = storageService.getPermanentStorage();
+        List<Storage> storages = storageService.getStorages();
+        Storage permanentStorage = storageService.getPermanentStorage(storages);
         s3service.moveSoundRecord(soundRecord, permanentStorage);
         setToSoundRecordStorageData(soundRecord, permanentStorage);
         soundRecordRepository.save(soundRecord);
