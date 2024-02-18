@@ -1,5 +1,6 @@
 package by.mitrakhovich.resourceservice.service;
 
+import brave.Tracing;
 import by.mitrakhovich.resourceservice.dal.entity.StorageType;
 import by.mitrakhovich.resourceservice.model.Storage;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -26,11 +27,12 @@ public class StorageService {
     @Value("${user.storage-service}")
     private String storageServiceUrl;
 
-    //    @Value("#{${application.defaultStorages}}")
     @Autowired
     @Qualifier("defaultStorages")
     private List<Storage> defaultStorages;
 
+    @Autowired
+    Tracing tracing;
     @Autowired
     private RestTemplate restTemplate;
 
@@ -53,6 +55,7 @@ public class StorageService {
 
     @CircuitBreaker(name = "circuit", fallbackMethod = "getStoragesFailed")
     public List<Storage> getStorages() {
+//        log.info("!!parent tracing id {}", tracing.tracer().currentSpan().context().parentIdString());
         Storage[] storages = restTemplate.getForObject(storageServiceUrl, Storage[].class);
         log.info("get Storages from StorageService {}", Arrays.toString(storages));
         return storages != null ? Arrays.asList(storages) : Collections.emptyList();

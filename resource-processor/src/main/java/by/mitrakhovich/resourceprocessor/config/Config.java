@@ -11,6 +11,11 @@ public class Config {
     @Bean
     @LoadBalanced
     public RestTemplate getRestTemplate() {
-        return new RestTemplate();
+        RestTemplate template = new RestTemplate();
+//        List<ClientHttpRequestInterceptor> interceptors = template.getInterceptors();
+//        interceptors.add(new UserContextInterceptor());
+//        template.setInterceptors(interceptors);
+
+        return template;
     }
 }

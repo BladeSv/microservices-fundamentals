@@ -4,8 +4,10 @@ import by.mitrakhovich.resourceservice.dal.entity.SoundRecord;
 import by.mitrakhovich.resourceservice.dal.repository.SoundRecordRepository;
 import by.mitrakhovich.resourceservice.model.RecordDTO;
 import by.mitrakhovich.resourceservice.model.Storage;
+import io.micrometer.tracing.Tracer;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +27,13 @@ public class SoundRecordService {
     private MessageService messageService;
     private StorageService storageService;
 
+
+    @Autowired
+    Tracer tracer;
+
     public Map<String, Long> saveRecord(final MultipartFile file) {
+        log.info("!!!!context tracing {}", tracer.currentSpan().context());
+        log.info("!!!!parrent tracing {}", tracer.currentSpan().context().parentId());
         if (file == null) return Collections.emptyMap();
         List<Storage> storages = storageService.getStorages();
         Storage stagingStorage = storageService.getStagingStorage(storages);

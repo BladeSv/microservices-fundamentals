@@ -10,6 +10,7 @@ data:
   init-song-db-schema: 'CREATE TABLE public.song_dao (id SERIAL NOT NULL, album varchar(255) NULL, artist varchar(255) NULL, length varchar(255) NULL, "name" varchar(255) NULL, resource_id varchar(255) NULL, "year" varchar(255) NULL, CONSTRAINT song_dao_pkey PRIMARY KEY (id));'
   init-storage-db-schema: 'CREATE TABLE public.storage_dao (id SERIAL NOT NULL, storage_type int2 NULL, bucket varchar(255) NULL, "path" varchar(255) NULL, CONSTRAINT storage_dao_pkey PRIMARY KEY (id), CONSTRAINT storage_dao_storage_type_check CHECK (((storage_type >= 0) AND (storage_type <= 1))));'
   script-storage-db-schema: INSERT INTO public.storage_dao (storage_type, bucket, "path") VALUES(0, 'staging-bucket', 'staging-files/'); INSERT INTO public.storage_dao (storage_type, bucket, "path") VALUES(1, 'permanent-bucket', 'permanent-files/');
+
 ---
 apiVersion: v1
 kind: Secret
