@@ -1,27 +1,35 @@
 package by.mitrakhovich.resourceservice.service;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.NewTopic;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
-@NoArgsConstructor
-@Slf4j
-@Data
+//@AllArgsConstructor
+//@NoArgsConstructor
+//@Slf4j
+//@Data
 public class MessageService {
+    Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
-    @Autowired
-    @Qualifier("resource_service_topic")
-    private NewTopic topic;
+
+    private final KafkaTemplate<String, String> kafkaTemplate;
+
+    //    @Qualifier("resource_service_topic")
+    private final NewTopic topic;
+
+    public MessageService(KafkaTemplate<String, String> kafkaTemplate, @Qualifier("resource_service_topic") NewTopic topic) {
+        this.kafkaTemplate = kafkaTemplate;
+        this.topic = topic;
+    }
+
+    //    public MessageService(KafkaTemplate<String, String> kafkaTemplate, NewTopic topic) {
+//        this.kafkaTemplate = kafkaTemplate;
+//        this.topic = topic;
+//    }
 
     public void sentMessage(String message) {
         log.info("send to kafka resource-service topic message-{}", message);

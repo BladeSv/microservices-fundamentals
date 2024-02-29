@@ -1,14 +1,10 @@
 package by.mitrakhovich.resourceservice.service;
 
-import brave.Tracing;
 import by.mitrakhovich.resourceservice.dal.entity.StorageType;
 import by.mitrakhovich.resourceservice.model.Storage;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,22 +15,29 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-@Slf4j
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+//@Slf4j
+//@Data
+//@AllArgsConstructor
+//@NoArgsConstructor
 public class StorageService {
+
+    Logger log = LoggerFactory.getLogger(this.getClass());
+
     @Value("${user.storage-service}")
     private String storageServiceUrl;
 
-    @Autowired
-    @Qualifier("defaultStorages")
-    private List<Storage> defaultStorages;
 
-    @Autowired
-    Tracing tracing;
-    @Autowired
-    private RestTemplate restTemplate;
+    private final List<Storage> defaultStorages;
+
+    //    @Autowired
+//    Tracing tracing;
+
+    private final RestTemplate restTemplate;
+
+    public StorageService(@Qualifier("defaultStorages") List<Storage> defaultStorages, RestTemplate restTemplate) {
+        this.defaultStorages = defaultStorages;
+        this.restTemplate = restTemplate;
+    }
 
     public Storage getStagingStorage(List<Storage> storages) {
         return getStorage(storages, StorageType.STAGING);

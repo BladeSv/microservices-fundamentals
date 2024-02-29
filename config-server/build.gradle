@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.2.2'
+    id 'org.springframework.boot' version '3.1.9'
     id 'io.spring.dependency-management' version '1.1.4'
     id 'com.google.cloud.tools.jib' version '3.4.0'
 }
@@ -28,13 +28,22 @@ repositories {
 }
 
 ext {
-    set('springCloudVersion', "2023.0.0")
+    set('springCloudVersion', "2022.0.5")
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.cloud:spring-cloud-config-server'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+    implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+
+// https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-prometheus
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    // https://mvnrepository.com/artifact/com.github.loki4j/loki-logback-appender
+    implementation 'com.github.loki4j:loki-logback-appender:1.5.0'
+
 }
 
 dependencyManagement {

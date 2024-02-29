@@ -4,10 +4,8 @@ import by.mitrakhovich.resourceservice.dal.entity.SoundRecord;
 import by.mitrakhovich.resourceservice.dal.repository.SoundRecordRepository;
 import by.mitrakhovich.resourceservice.model.RecordDTO;
 import by.mitrakhovich.resourceservice.model.Storage;
-import io.micrometer.tracing.Tracer;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpRange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,22 +16,30 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
-@Slf4j
-@AllArgsConstructor
+//@Slf4j
+//@AllArgsConstructor
 @Service
 public class SoundRecordService {
-    private SoundRecordRepository soundRecordRepository;
-    private S3service s3service;
-    private MessageService messageService;
-    private StorageService storageService;
 
+    Logger log = LoggerFactory.getLogger(this.getClass());
+    private final SoundRecordRepository soundRecordRepository;
+    private final S3service s3service;
+    private final MessageService messageService;
+    private final StorageService storageService;
 
-    @Autowired
-    Tracer tracer;
+    public SoundRecordService(SoundRecordRepository soundRecordRepository, S3service s3service, MessageService messageService, StorageService storageService) {
+        this.soundRecordRepository = soundRecordRepository;
+        this.s3service = s3service;
+        this.messageService = messageService;
+        this.storageService = storageService;
+    }
+
+//    @Autowired
+//    Tracer tracer;
 
     public Map<String, Long> saveRecord(final MultipartFile file) {
-        log.info("!!!!context tracing {}", tracer.currentSpan().context());
-        log.info("!!!!parrent tracing {}", tracer.currentSpan().context().parentId());
+//        log.info("!!!!context tracing {}", tracer.currentSpan().context());
+//        log.info("!!!!parrent tracing {}", tracer.currentSpan().context().parentId());
         if (file == null) return Collections.emptyMap();
         List<Storage> storages = storageService.getStorages();
         Storage stagingStorage = storageService.getStagingStorage(storages);
