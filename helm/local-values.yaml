@@ -2,16 +2,19 @@ profile:
   local: true
 service:
   type: LoadBalancer
+
 songDb:
   ports:
     port: 6432
     targetPort: 5432
+
 storageDb:
   ports:
     port: 7432
     targetPort: 5432
 kafka:
   test: false
+
 replicaCount: 1
 victoriametrics:
   targets:

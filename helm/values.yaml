@@ -9,6 +9,13 @@ songDb:
     targetPort: 5432
 
 replicaCount: 1
+storageDb:
+  ports:
+    port: 5432
+    targetPort: 5432
+kafka:
+  test: false
+
 victoriametrics:
   targets:
     - "resource-service:8080"
