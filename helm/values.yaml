@@ -9,4 +9,20 @@ songDb:
     targetPort: 5432
 
 replicaCount: 1
+storageDb:
+  ports:
+    port: 5432
+    targetPort: 5432
+kafka:
+  test: false
+
+victoriametrics:
+  targets:
+    - "resource-service:8080"
+    - "song-service:8081"
+    - "resource-processor:8082"
+    - "storage-service:8083"
+    - "gateway-server:8090"
+    - "eureka-server:8098"
+    - "config-server:8099"
 

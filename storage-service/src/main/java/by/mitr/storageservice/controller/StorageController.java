@@ -4,11 +4,14 @@ import by.mitr.storageservice.model.Storage;
 import by.mitr.storageservice.service.StorageService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/storages")
 @AllArgsConstructor
@@ -17,16 +20,24 @@ public class StorageController {
 
     @PostMapping
     public ResponseEntity<?> createStorage(@Valid @RequestBody Storage storage) {
-        return ResponseEntity.ok(storageService.create(storage));
+        log.info("Request to create Storage {}", storage);
+        Map<String, Long> storageId = storageService.create(storage);
+        log.info("Storage was created with {}", storageId);
+        return ResponseEntity.ok(storageId);
     }
 
     @GetMapping
     public ResponseEntity<?> getStorages() {
-        return ResponseEntity.ok(storageService.getAllStorages());
+        List<Storage> allStorages = storageService.getAllStorages();
+        log.info("Request to get all Storages {}", allStorages);
+        return ResponseEntity.ok(allStorages);
     }
 
     @DeleteMapping
     public ResponseEntity<?> deleteStorages(@RequestParam("id") List<Long> ids) {
-        return ResponseEntity.ok(storageService.deleteStoragesByIds(ids));
+        log.info("Request to delete Storages with ids {}", ids);
+        Object deleteStoragesByIds = storageService.deleteStoragesByIds(ids);
+        log.info("Storage was deleted with ids {}", deleteStoragesByIds);
+        return ResponseEntity.ok(deleteStoragesByIds);
     }
 }

@@ -6,7 +6,8 @@ import com.amazonaws.services.s3.transfer.Copy;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.amazonaws.services.s3.transfer.Upload;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,10 +16,11 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
+//@Slf4j
 @Repository
 public class S3Repository {
 
+    Logger log = LoggerFactory.getLogger(this.getClass());
     private final AmazonS3 s3;
 
 //    @Value("${user.aws.s3.bucket.name:bladesv}")

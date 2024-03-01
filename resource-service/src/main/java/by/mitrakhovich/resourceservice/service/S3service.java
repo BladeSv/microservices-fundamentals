@@ -6,8 +6,8 @@ import by.mitrakhovich.resourceservice.mapper.S3ResponseMapper;
 import by.mitrakhovich.resourceservice.model.RecordDTO;
 import by.mitrakhovich.resourceservice.model.Storage;
 import com.amazonaws.services.s3.model.S3Object;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpRange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,12 +17,19 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
-@Slf4j
-@AllArgsConstructor
+//@Slf4j
+//@AllArgsConstructor
 @Service
 public class S3service {
-    private S3ResponseMapper s3ResponseMapper;
-    private S3Repository s3Repository;
+
+    Logger log = LoggerFactory.getLogger(this.getClass());
+    private final S3ResponseMapper s3ResponseMapper;
+    private final S3Repository s3Repository;
+
+    public S3service(S3ResponseMapper s3ResponseMapper, S3Repository s3Repository) {
+        this.s3ResponseMapper = s3ResponseMapper;
+        this.s3Repository = s3Repository;
+    }
 
     public void uploadFile(final MultipartFile file, SoundRecord soundRecord) {
         String path = soundRecord.getPath() + soundRecord.getId().toString();

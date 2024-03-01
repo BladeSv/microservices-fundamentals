@@ -1,0 +1,74 @@
+{{ if not .Values.profile.local }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: storage-service
+spec:
+  selector:
+    app: storage-service
+  ports:
+    - protocol: TCP
+      port: 8083
+      targetPort: 8083
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: storage-service
+  labels:
+    app: storage-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: storage-service
+  template:
+    metadata:
+      name: storage-service
+      labels:
+        app: storage-service
+    spec:
+      containers:
+        - name: storage-service
+          image: storage-service-image:latest
+          livenessProbe:
+            httpGet:
+              port: 8083
+              path: /actuator/health/liveness
+            initialDelaySeconds: 10
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              port: 8083
+              path: /actuator/health/readiness
+            initialDelaySeconds: 20
+            periodSeconds: 3
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "sh", "-c", "sleep 10" ]
+          ports:
+            - containerPort: 8081
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret-config-map
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret-config-map
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - mountPath: /app/resources/application.properties
+              name: storage-app-properties
+              subPath: application.properties
+          imagePullPolicy: Never
+      restartPolicy: Always
+      volumes:
+        - name: storage-app-properties
+          configMap:
+            name: config-map-storage-service-properties
+{{ end }}

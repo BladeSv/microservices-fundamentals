@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +31,9 @@ public class MessageReceiver {
     private RestTemplate restTemplate;
     private MessageService messageService;
 
+    @Autowired
+
+
     public MessageReceiver(TikaSongProcessor songProcessor, RestTemplate restTemplate, MessageService messageService) {
         this.songProcessor = songProcessor;
         this.restTemplate = restTemplate;
@@ -38,6 +42,7 @@ public class MessageReceiver {
 
     @KafkaListener(topics = "#{resource_service_topic.name()}", groupId = "resource-consumer")
     public void receiveMessageKafka(String message) throws JsonProcessingException {
+
         log.info("receive from kafka resource-service topic message-{}", message);
         byte[] resourceObject = getResourceObject(message);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(resourceObject);

@@ -9,8 +9,10 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,9 +21,11 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Collections;
 import java.util.List;
 
-@Slf4j
+
 @Configuration
 public class Config {
+    Logger log = LoggerFactory.getLogger(this.getClass());
+
     @Value("${user.aws.s3Endpoint}")
     private String s3Endpoint;
     @Value("${user.aws.awsAccessKeyId}")
@@ -64,9 +68,11 @@ public class Config {
                 .build();
     }
 
+
     @Bean
     @LoadBalanced
-    public RestTemplate getRestTemplate() {
-        return new RestTemplate();
+    public RestTemplate getRestTemplate(final RestTemplateBuilder restTemplateBuilder) {
+        return restTemplateBuilder
+                .build();
     }
 }

@@ -5,10 +5,8 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
-import org.springframework.boot.ssl.SslBundles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -38,8 +36,8 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ProducerFactory<String, String> producerFactory(KafkaProperties kafkaProperties, ObjectProvider<SslBundles> sslBundles) {
-        Map<String, Object> props = kafkaProperties.buildProducerProperties(sslBundles.getIfAvailable());
+    public ProducerFactory<String, String> producerFactory(KafkaProperties kafkaProperties) {
+        Map<String, Object> props = kafkaProperties.buildProducerProperties();
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 
@@ -48,12 +46,15 @@ public class KafkaConfig {
 
     @Bean
     public KafkaTemplate<String, String> kafkaTemplate(ProducerFactory<String, String> producerFactory) {
-        return new KafkaTemplate<>(producerFactory);
+        KafkaTemplate<String, String> stringStringKafkaTemplate = new KafkaTemplate<>(producerFactory);
+        stringStringKafkaTemplate.setObservationEnabled(true);
+
+        return stringStringKafkaTemplate;
     }
 
     @Bean
-    public ConsumerFactory<String, String> consumerFactory(KafkaProperties kafkaProperties, ObjectProvider<SslBundles> sslBundles) {
-        Map<String, Object> props = kafkaProperties.buildConsumerProperties(sslBundles.getIfAvailable());
+    public ConsumerFactory<String, String> consumerFactory(KafkaProperties kafkaProperties) {
+        Map<String, Object> props = kafkaProperties.buildConsumerProperties();
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
@@ -63,6 +64,7 @@ public class KafkaConfig {
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory(ConsumerFactory<String, String> consumerFactory) {
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.getContainerProperties().setObservationEnabled(true);
         factory.setConsumerFactory(consumerFactory);
         return factory;
     }

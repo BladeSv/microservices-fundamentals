@@ -3,7 +3,6 @@ package by.mitrakhovich.resourceservice.controller;
 import by.mitrakhovich.resourceservice.model.RecordDTO;
 import by.mitrakhovich.resourceservice.service.SoundRecordService;
 import by.mitrakhovich.resourceservice.validator.ValidFile;
-import lombok.AllArgsConstructor;
 import org.aspectj.util.FileUtil;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
@@ -16,11 +15,14 @@ import java.util.List;
 import java.util.Map;
 
 @Validated
-@AllArgsConstructor
 @RestController
 @RequestMapping("/resources")
 public class ResourceController {
-    private SoundRecordService soundRecordService;
+    private final SoundRecordService soundRecordService;
+
+    public ResourceController(SoundRecordService soundRecordService) {
+        this.soundRecordService = soundRecordService;
+    }
 
     @PostMapping
     public ResponseEntity<?> uploadResource(@ValidFile @RequestParam("file") MultipartFile file) {

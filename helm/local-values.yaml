@@ -2,16 +2,28 @@ profile:
   local: true
 service:
   type: LoadBalancer
+
 songDb:
   ports:
     port: 6432
     targetPort: 5432
+
 storageDb:
   ports:
     port: 7432
     targetPort: 5432
 kafka:
   test: false
+
 replicaCount: 1
+victoriametrics:
+  targets:
+    - "host.docker.internal:8080"
+    - "host.docker.internal:8081"
+    - "host.docker.internal:8082"
+    - "host.docker.internal:8083"
+    - "host.docker.internal:8090"
+    - "host.docker.internal:8098"
+    - "host.docker.internal:8099"
 
 
