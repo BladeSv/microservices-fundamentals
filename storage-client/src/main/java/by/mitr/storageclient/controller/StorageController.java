@@ -1,15 +1,20 @@
 package by.mitr.storageclient.controller;
 
-import by.mitr.storageclient.model.Student;
+import by.mitr.storageclient.model.Storage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+import java.util.HashMap;
 
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.oauth2AuthorizedClient;
 
@@ -22,46 +27,66 @@ public class StorageController {
 
 
     @GetMapping("/")
-    public String index(Model model) {
+    public String index() {
         return "index";
     }
-//    @GetMapping("/storages")
-//    public String storages(Model model){
-//        model.addAttribute("message","Hello storages");
-//        return "storages";
-//    }
+
 
     @GetMapping("/storages")
-    public String getArticles(
+    public String getStorages(
             @RegisteredOAuth2AuthorizedClient("storage-client-authorization-code") OAuth2AuthorizedClient authorizedClient, Model model
     ) {
-        var articles = this.webClient
+        var storages = this.webClient
                 .get()
-                .uri("http://localhost:8083/articles")
+                .uri("http://localhost:8083/storages")
                 .attributes(oauth2AuthorizedClient(authorizedClient))
                 .retrieve()
-                .bodyToMono(String[].class)
+                .bodyToMono(Storage[].class)
                 .block();
-        model.addAttribute("student", new Student());
-        model.addAttribute("storages", articles);
+
+        model.addAttribute("storages", storages);
+        model.addAttribute("storage", new Storage());
+
         return "storages";
     }
 
     @PostMapping("/storages")
-    public String getArticles2(
+    public String getCreateStorage(
             @RegisteredOAuth2AuthorizedClient("storage-client-authorization-code") OAuth2AuthorizedClient authorizedClient,
-            Model model, @ModelAttribute("student") Student student
+            Model model, @ModelAttribute("storage") Storage newStorage
     ) {
-        System.out.println("Post /storages");
-        var articles = this.webClient
-                .post()
-                .uri("http://localhost:8083/articles?id=" + student.getName())
-                .attributes(oauth2AuthorizedClient(authorizedClient))
-                .retrieve()
-                .bodyToMono(String[].class)
-                .block();
+        try {
+            var storage = this.webClient
+                    .post()
+                    .uri("http://localhost:8083/storages")
+                    .accept(MediaType.APPLICATION_JSON)
+                    .body(Mono.just(newStorage), Storage.class)
+                    .attributes(oauth2AuthorizedClient(authorizedClient))
+                    .retrieve()
+                    .bodyToMono(HashMap.class)
+                    .block();
+        } catch (RuntimeException ignored) {
+            model.addAttribute("errorMessage", "You do not have rights for this action.");
+        }
 
-        model.addAttribute("storages", articles);
-        return "storages";
+        return getStorages(authorizedClient, model);
+    }
+
+    @GetMapping("/storages/delete/{id}")
+    public String deleteStorage(@PathVariable("id") long id, @RegisteredOAuth2AuthorizedClient("storage-client-authorization-code") OAuth2AuthorizedClient authorizedClient,
+                                Model model) {
+        try {
+            this.webClient
+                    .delete()
+                    .uri("http://localhost:8083/storages?id=" + id)
+                    .attributes(oauth2AuthorizedClient(authorizedClient))
+                    .retrieve()
+                    .bodyToMono(HashMap.class)
+                    .block();
+
+        } catch (RuntimeException ignored) {
+            model.addAttribute("errorMessage", "You do not have rights for this action.");
+        }
+        return getStorages(authorizedClient, model);
     }
 }

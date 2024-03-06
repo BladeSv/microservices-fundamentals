@@ -18,7 +18,6 @@ import java.util.Map;
 public class StorageController {
     private StorageService storageService;
 
-    //    @PreAuthorize("hasAuthority('SCOPE_admin.write')")
     @PostMapping
     public ResponseEntity<?> createStorage(@Valid @RequestBody Storage storage) {
         log.info("Request to create Storage {}", storage);
@@ -27,15 +26,15 @@ public class StorageController {
         return ResponseEntity.ok(storageId);
     }
 
-    //    @PreAuthorize("hasRole('ROLE_ADMIN')")
+
     @GetMapping
     public ResponseEntity<?> getStorages() {
+
         List<Storage> allStorages = storageService.getAllStorages();
         log.info("Request to get all Storages {}", allStorages);
         return ResponseEntity.ok(allStorages);
     }
 
-    //    @PreAuthorize("hasAuthority('SCOPE_admin.write')")
     @DeleteMapping
     public ResponseEntity<?> deleteStorages(@RequestParam("id") List<Long> ids) {
         log.info("Request to delete Storages with ids {}", ids);

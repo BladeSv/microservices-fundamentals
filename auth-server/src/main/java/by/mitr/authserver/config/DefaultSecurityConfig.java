@@ -38,40 +38,9 @@ public class DefaultSecurityConfig {
 
     @Bean
     InMemoryUserDetailsManager users() {
-        var one = User.withDefaultPasswordEncoder().roles("admin", "user").username("one").password("pw").build();
-        var two = User.withDefaultPasswordEncoder().roles("user").username("two").password("pw").build();
+        var one = User.withDefaultPasswordEncoder().roles("admin").username("admin").password("pw").build();
+        var two = User.withDefaultPasswordEncoder().roles("user").username("user").password("pw").build();
 
         return new InMemoryUserDetailsManager(one, two);
     }
-//    @Bean
-//    @Order(1)
-//    SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
-//        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-//        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-//                .oidc(withDefaults());
-//        return http.formLogin(withDefaults()).build();
-//    }
-//
-//    @Bean
-//    @Order(2)
-//    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-//        http.authorizeHttpRequests(authorizeRequests -> authorizeRequests.anyRequest()
-//                        .authenticated())
-//                .formLogin(withDefaults());
-//        return http.build();
-//    }
-
-//    @Bean
-//    UserDetailsService users() {
-//        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-//        UserDetails user = User.builder()
-//                .username("admin")
-//                .password("pass")
-//                .passwordEncoder(encoder::encode)
-//                .roles("ADMIN")
-//                .build();
-//        return new InMemoryUserDetailsManager(user);
-//    }
-
-
 }

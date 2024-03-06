@@ -5,33 +5,66 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Storage View</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
 <h1>Storages</h1>
-<table>
+<table class="table">
     <tbody>
+    <tr>
+        <th>
+            Storage id
+        </th>
+        <th>
+            Storage type
+        </th>
+        <th>
+            Bucket name
+        </th>
+        <th>
+            Bucket path
+        </th>
+        <th>
+            Delete
+        </th>
+    </tr>
     <tr th:each="storage: ${storages}">
-        <td th:text="${storage}" />
+        <td th:text="${storage.id}"/>
+        <td th:text="${storage.storageType}"/>
+        <td th:text="${storage.bucket}"/>
+        <td th:text="${storage.path}"/>
+        <td><a class="btn btn-danger" th:href="@{/storages/delete/{id}(id=${storage.id})}">Delete</a></td>
     </tr>
     </tbody>
-
-
-    <form action="#" th:action="@{/storages}" th:object="${student}" method="post">
-        <table border="1">
-            <tr>
-                <td><label />studentId</td>
-                <td><input type="number" th:field="*{id}" /></td>
-            </tr>
-            <tr>
-                <td><label />StrudentName</td>
-                <td><input type="text" th:field="*{name}" /></td>
-            </tr>
-            <tr>
-                <td><input type="submit" value="Submit" /></td>
-            </tr>
-        </table>
-    </form>
 </table>
+
+
+<form class="flex-box w-25" action="#" th:action="@{/storages}" th:object="${storage}" method="post">
+
+    <legend>Create new Storage</legend>
+    <div class="mb-3">
+        <label class="form-label" for="storageType">Storage type</label>
+
+        <select class="form-select form-select-sm" id="storageType" th:field="*{storageType}">
+            <option th:value="'STAGING'" th:text="staging"></option>
+            <option th:value="'PERMANENT'" th:text="permanent"></option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label"> Bucket name</label>
+        <input class="form-text" type="text" th:field="*{bucket}"/>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Bucket path</label>
+        <input class="form-text" type="text" th:field="*{path}"/>
+    </div>
+    <input class="btn btn-primary" type="submit" value="Submit"/>
+
+    <h2 style="color: red" th:if="${errorMessage != null}" th:text="${errorMessage}"/>
+</form>
+
+
 </body>
 </html>
