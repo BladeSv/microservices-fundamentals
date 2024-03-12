@@ -81,11 +81,5 @@ spec:
         - name: storage-database-init-vol
           configMap:
             name: app-config-map
-  volumeClaimTemplates:
-    - metadata:
-        name: storage-database-db-pvc
-      spec:
-        accessModes: [ "ReadWriteOnce" ]
-        resources:
-          requests:
-            storage: 1Gi
+        - name: storage-database-db-pvc
+          emptyDir: { }

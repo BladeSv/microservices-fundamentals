@@ -26,8 +26,10 @@ public class StorageController {
         return ResponseEntity.ok(storageId);
     }
 
+
     @GetMapping
     public ResponseEntity<?> getStorages() {
+
         List<Storage> allStorages = storageService.getAllStorages();
         log.info("Request to get all Storages {}", allStorages);
         return ResponseEntity.ok(allStorages);
