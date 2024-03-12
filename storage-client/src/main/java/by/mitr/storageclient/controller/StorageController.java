@@ -2,6 +2,7 @@ package by.mitr.storageclient.controller;
 
 import by.mitr.storageclient.model.Storage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
@@ -21,9 +22,11 @@ import static org.springframework.security.oauth2.client.web.reactive.function.c
 @Controller
 public class StorageController {
 
-
     @Autowired
     private WebClient webClient;
+
+    @Value("${user.application.storage-service.host}")
+    private String storageServiceHost;
 
 
     @GetMapping("/")
@@ -38,7 +41,7 @@ public class StorageController {
     ) {
         var storages = this.webClient
                 .get()
-                .uri("http://localhost:8083/storages")
+                .uri(storageServiceHost + "/storages")
                 .attributes(oauth2AuthorizedClient(authorizedClient))
                 .retrieve()
                 .bodyToMono(Storage[].class)
@@ -58,7 +61,7 @@ public class StorageController {
         try {
             var storage = this.webClient
                     .post()
-                    .uri("http://localhost:8083/storages")
+                    .uri(storageServiceHost + "/storages")
                     .accept(MediaType.APPLICATION_JSON)
                     .body(Mono.just(newStorage), Storage.class)
                     .attributes(oauth2AuthorizedClient(authorizedClient))
@@ -78,7 +81,7 @@ public class StorageController {
         try {
             this.webClient
                     .delete()
-                    .uri("http://localhost:8083/storages?id=" + id)
+                    .uri(storageServiceHost + "/storages?id=" + id)
                     .attributes(oauth2AuthorizedClient(authorizedClient))
                     .retrieve()
                     .bodyToMono(HashMap.class)

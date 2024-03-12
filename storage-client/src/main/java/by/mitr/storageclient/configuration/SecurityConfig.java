@@ -24,7 +24,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/").permitAll()//
+                                .requestMatchers("/").permitAll()
                                 .anyRequest().authenticated())
                 .oauth2Login(oauth2Login ->
                         oauth2Login.loginPage("/oauth2/authorization/storage-client-oidc"))

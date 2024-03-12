@@ -4,12 +4,16 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.4'
 }
 
-group = 'by.mitr'
-version = '0.0.1-SNAPSHOT'
+group = 'by.mitrakhovich'
+version = !!System.getProperty("image_version") ? System.getProperty("image_version") : "latest"
 
 java {
-    sourceCompatibility = '17'
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
 
 repositories {
     mavenCentral()
